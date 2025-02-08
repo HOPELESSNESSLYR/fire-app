@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "barcode-detector": "^2.3.1",
+    "pure": "^2.85.0",
+    "vue-qrcode-reader": "^5.5.11"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hash": "d2417d25",
+  "configHash": "e9152f8a",
+  "lockfileHash": "77cfcec7",
+  "browserHash": "259cb8bc",
+  "optimized": {
+    "vue-qrcode-reader": {
+      "src": "../../../../../node_modules/vue-qrcode-reader/dist/vue-qrcode-reader.js",
+      "file": "vue-qrcode-reader.js",
+      "fileHash": "e148faf4",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}
