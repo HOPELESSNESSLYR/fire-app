@@ -220,6 +220,11 @@ function onError(err) {
 		sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 		sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 		success: function (res) {
+			uni.showToast({
+				title: '上传中，请不要关闭！',
+				icon: 'none',
+				duration: 10000
+			});
 			// 返回选定照片的本地文件路径列表
 			if (res.tempFilePaths && res.tempFilePaths.length > 0) {
 				let imagePaths = res.tempFilePaths[0];
@@ -232,6 +237,10 @@ function onError(err) {
 				filePath: imagePaths, 	// 要上传文件资源的路径
 				name: 'file', 	// 文件对应的key
 				success: (uploadFileRes) => {
+					uni.showToast({
+						title: '上传中，请不要关闭！',
+						icon: 'none'
+					});
 					console.log(uploadFileRes.data);
 					console.log(imagePaths)
 					// 处理上传成功后的结果
@@ -263,6 +272,9 @@ function onError(err) {
 						}
 					});
 
+					uni.navigateTo({
+						url: '/pages/index/uplaod'
+					});
 				},
 				fail: (uploadFileErr) => {
 					// 处理上传失败的错误信息
