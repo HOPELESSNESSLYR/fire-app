@@ -30,7 +30,7 @@
       扫描结果: <b>{{ result }}</b>
     </p>
 
-    <view>
+    <view v-if="haveresult">
       <qrcode-stream
         :constraints="selectedConstraints"
         :track="trackFunctionSelected.value"
@@ -40,26 +40,101 @@
         @camera-on="onCameraReady"
       />
     </view>
+
+			
+			<view class="new">
+<!-- 			    <picker mode="selector" :range="categories" @change="onCategoryChange" >
+			      <view class="picker">
+			        点击选择消防设备 : {{ selectedCategory }}
+			      </view>
+			    </picker> -->
+					
+			    <view v-if="selectedCategory">	
+						<view v-for="(item, index) in formItems" :key="index" class="form-item">
+
+						  <view style="width: 450rpx;">
+						    <label>{{ item.label }}</label>
+						  </view>
+						
+							<radio-group :v-model="item.isSelected" @change="getIsSelect(item,index)">
+								<label v-for="(item,index) in redioItem" :key="index">
+			
+									<label :for="item.name">
+										<text>{{item.value+' '}} </text>
+									</label>
+									
+									<radio :id="item.name" :value="item.name" :checked="item.checked" v-model="item.checked"></radio>
+								</label>
+								<!-- <label>
+									Y <radio :value="true"></radio>
+								</label>
+								<label>
+									N <radio :value="false"></radio>
+								</label> -->
+							</radio-group>
+							
+						</view>
+			    </view>
+			  </view>
+	
+		
 		<button @click="record" class="imageButton">已检查</button>
 		<button @click="takePhoto" class="imageButton">拍照上传</button>
-				
-
 		</view>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'	
 
-
 /*** detection handling ***/
 import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
 
 
+/*** select device ***/
 const result = ref('')
+let haveresult = ref(true)
+const	selectedCategory = ref('');
+const	categories = ref(['消火栓', '灭火器', '水泵房', '阀组间']);
+const redioItem = ref([
+	{name: "Y", value: "Y",checked: ''},
+	{name: "N", value: "N"}
+])
+const formItems = ref([])
+const formItems1 = ref([
+        { label: "水带", value: "水带", isSelected: 'true' },
+        { label: "水枪", value: "水枪", isSelected: 'true' },
+        { label: "卷盘", value: "卷盘", isSelected: 'true' },
+        { label: "开关", value: "开关", isSelected: 'true' },
+        { label: "外观", value: "外观", isSelected: 'true' },
+        { label: "按钮", value: "按钮", isSelected: 'true' },
+      ])
+const formItems2 = ref([
+			{ label: "压力", value: "压力", isSelected: 'true' },
+			{ label: "喷嘴", value: "喷嘴", isSelected: 'true' },
+			{ label: "瓶体", value: "瓶体", isSelected: 'true' },
+			{ label: "压把", value: "压把", isSelected: 'true' },
+			{ label: "保险销", value: "保险销", isSelected: 'true' },
+			{ label: "有效期", value: "有效期", isSelected: 'true' },
+		])
+const formItems3 = ref([
+			{ label: "压力", value: "压力", isSelected: 'true' },
+			{ label: "消防供电", value: "消防供电", isSelected: 'true' },
+			{ label: "水泵", value: "水泵", isSelected: 'true' },
+			{ label: "自动状态", value: "自动状态", isSelected: 'true' },
+			{ label: "污水泵", value: "污水泵", isSelected: 'true' },
+			{ label: "现场环境", value: "现场环境", isSelected: 'true' },
+		])
+const formItems4 = ref([
+			{ label: "报警阀组", value: "报警阀组", isSelected: 'true' },
+			{ label: "压力表", value: "压力表", isSelected: 'true' },
+			{ label: "水力警铃", value: "水力警铃", isSelected: 'true' },
+			{ label: "管道", value: "管道", isSelected: 'true' },
+			{ label: "阀门", value: "阀门", isSelected: 'true' },
+			{ label: "现场环境", value: "现场环境", isSelected: 'true' },
+		])
+
 // onMounted(()=>{
-// 	uni.showModal({
-// 		content:result
-// 	})
+// 	cata()
 // })
 const MyComponent = {
   components: {
@@ -70,11 +145,24 @@ const MyComponent = {
 }
 function onDetect(detectedCodes) {
   console.log(detectedCodes)
-  result.value = JSON.stringify(detectedCodes.map((code) => code.rawValue)).slice(2, -2) ;
+	const regex = /^[\u4e00-\u9fa5\d]/;
+
+	if(!regex.test(result.value)){
+		result.value = JSON.stringify(detectedCodes.map((code) => code.rawValue)).slice(4, -4) ;
+	}else{
+		result.value = JSON.stringify(detectedCodes.map((code) => code.rawValue)).slice(2, -2) ;
+	}
+	
 	// result.value = JSON.parse (detectedCodes.map((code) => code.rawValue))
 	console.log(detectedCodes.map((code) => code.rawValue)[0])
-
+	
+	if(result.value!=undefined&& result.value!=''){
+		haveresult.value= false
+	}
+	
+	cata()
 }
+
 /*** select camera ***/
 const selectedConstraints = ref({ facingMode: 'environment' })
 const defaultConstraintOptions = [
@@ -98,8 +186,58 @@ async function onCameraReady() {
   error.value = ''
 }
 
-/*** track functons ***/
 
+/*** deal device ***/
+
+// function onCategoryChange(e) {
+// 	// console.log('picker发送选择改变，携带值为', categories.value[e.detail.value])
+//       selectedCategory.value = categories.value[e.detail.value];
+//       updateOptions();
+// 			// console.log(JSON.stringify(formItems.value)) 
+//     }
+function cata(){
+	var resultString = result.value
+	// var resultString="第一个第一个"  //测试数据
+	
+	uni.request({
+		//新写接口post列表
+	  url: 'https://yanru.zicp.fun/fire/firefighting/getlist',
+		// url: 'http://192.168.10.95:8082/fire/firefighting/getlist',
+	  method: 'GET',
+	  data: {
+			qrContent :resultString
+		},
+	  header: { 'content-type': 'application/json'},
+	  success: (res) => {
+	    console.log('请求成功', res);
+			selectedCategory.value = res.data[0].deviceGroup;
+			updateOptions();
+				// uni.showModal({
+				// 	content:selectedCategory.value
+				// })
+		},
+	  fail: (res) => {
+	    console.log('请求失败', res);
+		},
+	});
+}
+
+function updateOptions() {
+      if (selectedCategory.value === '消火栓') {
+				formItems.value=formItems1.value
+
+      } else if (selectedCategory.value === '灭火器') {
+				formItems.value=formItems2.value
+
+      } else if (selectedCategory.value === '水泵房') {
+				formItems.value=formItems3.value
+
+      } else if (selectedCategory.value === '阀组间') {
+				formItems.value=formItems4.value
+      }
+}
+
+/*** track functons ***/
 function paintOutline(detectedCodes, ctx) {
   for (const detectedCode of detectedCodes) {
     const [firstPoint, ...otherPoints] = detectedCode.cornerPoints
@@ -214,6 +352,7 @@ function onError(err) {
   }
 }
 
+/***  device button  ***/
 	function takePhoto(){
 		uni.chooseImage({
 		count: 1, // 默认9
@@ -234,6 +373,7 @@ function onError(err) {
 						// });
 			uni.uploadFile({
 				url: 'https://yanru.zicp.fun/common/upload',
+				// url: 'http://192.168.10.95:8082/common/upload',
 				filePath: imagePaths, 	// 要上传文件资源的路径
 				name: 'file', 	// 文件对应的key
 				success: (uploadFileRes) => {
@@ -247,6 +387,7 @@ function onError(err) {
 					var image = JSON.parse(uploadFileRes.data).fileName
 					uni.request({
 						url: 'https://yanru.zicp.fun/fire/firefighting/uni',
+						// url: 'http://192.168.10.95:8082/fire/firefighting/uni',
 						method: 'POST',
 						data: {
 							// 'qrContent': "第一个第一个",
@@ -296,30 +437,35 @@ function onError(err) {
 		
 		}
 	});
-
 	}
 	
-	var resultString  =  result.value
+	// var resultString  =  result.value
 	function record(){
-		console.log(resultString)
-		console.log(result)
+		var resultString  =  result.value
+		// console.log("formItems.value"+JSON.stringify(formItems.value)) 
+		const	postData = ref([]);
+		let	falseNo = 0;
+		for(var i=0;i<6;i++){	
+			if(formItems.value[i].isSelected==false){
+				falseNo++;
+				postData.value.push(formItems.value[i].value)
+				console.log('postData.value'+JSON.stringify(postData.value))
+				// console.log("falseNo"+falseNo)
+			}
+		}
 		
-		var formGet={}
-		// formGet["qrContent"] = "第三的二维码内容灭火器高品高"
-		formGet["qrContent"] = result.value
-		console.log(formGet["qrContent"])
-		var qrContent="第三的二维码内容灭火器高品高"
-		// qrContent=JSON.stringify(qrContent)
-		uni.showModal({
-			content:formGet["qrContent"]
-		})
+		console.log(resultString)
+		
+
+		// var resultString="第三的二维码内容灭火器高品高"  //测试数据
+		
 		uni.request({
 			//新写接口post列表
 		  url: 'https://yanru.zicp.fun/fire/firefighting/getlist',
+			// url: 'http://192.168.10.95:8082/fire/firefighting/getlist',
 		  method: 'GET',
-			// data: formGet,
 		  data: {
-				qrContent
+				qrContent :resultString
 			},
 			// header: { 'content-type': 'application/x-www-form-urlencoded;' },
 		  header: { 'content-type': 'application/json'},
@@ -336,14 +482,27 @@ function onError(err) {
 				let min = date.getMinutes();
 				let seconds = date.getSeconds();
 				var form={}
-				form["fireId"] = res.data[0].fireId
+				form["fireId"] = res.data[0].fireId 
 				form["deviceName"] = res.data[0].deviceName
 				form["deviceModel"] = res.data[0].deviceModel
 				form["locate"] = res.data[0].locate
 				form["checkRecords"] = year+"-"+month+"-"+day+" "+hour+":"+ min+":"+ seconds
 				form["pointCheck"] = "已点检"
+
+				if(falseNo==0){
+					form["qualified"] = "合格"
+				}else{
+					form["qualified"] = "不合格"
+					form["feedback"] = postData.value[0] +"不正常"
+					for(var i=1;i<falseNo;i++){
+						form["feedback"] = postData.value[i]+'、'+form["feedback"]
+					}
+				}				
+
+	
 				uni.request({
 				  url: 'https://yanru.zicp.fun/record/record/add',
+					// url:'http://192.168.10.95:8082/record/record/add',
 				  method: 'POST', 
 				  data: form,
 				  header: { 
@@ -357,6 +516,7 @@ function onError(err) {
 						form2["fireId"] = form["fireId"]
 						uni.request({
 							url: 'https://yanru.zicp.fun/fire/firefighting/update',
+							// url: 'http://192.168.10.95:8082/fire/firefighting/update',
 							method: 'POST', 
 							data: form2,
 							header: { 
@@ -367,47 +527,76 @@ function onError(err) {
 								// uni.showModal({
 								// 	content:"更新成功"
 								// })
+								uni.showModal({
+									content:"点检成功"
+								})
 							},
 							fail: (err) => {
 								console.log('更新失败', err);
-								// uni.showModal({
-								// 	content:"更新失败，请重试"
-								// })
+								uni.showModal({
+									content:"更新失败，请重试"
+								})
 							}
 						});	
 						
 				  },
 				  fail: (err) => {
 				    console.log('请求失败', err);
-						// uni.showModal({
-						// 	content:"新增失败，请重试"
-						// })
+						uni.showModal({
+							content:"新增失败，请重试"
+						})
 				  },
 				  complete: () => {
 				    console.log('请求完成');
 					},
 				});	
 				
-
 		  },
 		  fail: (err) => {
 		    console.log('请求失败', err);
 				uni.showModal({
-					content:"点检失败，请重试"
+					content:"点检失败，后台无此设备"
 				})
 		  },
 		  complete: () => {
 		    console.log('请求完成');
-				uni.showModal({
-					content:"点检成功"
-				})
+				// uni.showModal({
+				// 	content:"点检成功"
+				// })
 		  }
 		});
+			
+		// 重置选项
+		selectedCategory.value='';
+		formItems.value=formItems.value;
+	}
+	function getIsSelect(item,index){
+		formItems.value[index].isSelected = !formItems.value[index].isSelected;
+		formItems.value[index].isSelected = !item.value;
+
+		// console.log(JSON.stringify(formItems.value))
+		// console.log(item.value)        
 	}
 	
 </script>
 
 <style scoped>
+	.decode-result{
+		margin: 25rpx;
+	}
+	
+	.form-item {
+	  margin-bottom: 20rpx;
+	  display: flex;
+	  align-items: center;
+	}
+	.boolean-choice {
+	  margin-left: 10rpx;
+	  display: flex;
+	  align-items: center;
+	}
+	
+	
 .error {
   font-weight: bold;
   color: red;
@@ -421,5 +610,12 @@ function onError(err) {
 	
 .imageButton{
 	margin: 10px;
+}
+.new{
+	margin-left: 35rpx;
+	font-size: 34rpx;
+}
+.picker{
+	margin-bottom: 20rpx;
 }
 </style>
