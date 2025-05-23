@@ -285,12 +285,10 @@ function onError(err) {
 
 
 function goCheck(){
-
-	// navigator.navigateTo({
- //  url: '/pages/check/check?fireid='+fireid.value,
-	// })
-	window.location.href = '/fireH5/pages/index2/index2';
-	
+	// window.location.href = 'fireH5/pages/index2/index2';
+	uni.navigateTo({
+		url: '/pages/index2/index2'
+	});
 	
 }
 </script>

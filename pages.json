@@ -1,14 +1,14 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path" : "pages/index2/index2",
+			"path" : "pages/index2/information",
 			"style" : 
 			{
 				"navigationBarTitleText" : "消防设备APP"
 			}
 		},
 		{
-			"path" : "pages/index2/information",
+			"path" : "pages/index2/index2",
 			"style" : 
 			{
 				"navigationBarTitleText" : ""
