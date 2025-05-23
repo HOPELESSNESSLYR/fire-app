@@ -16,6 +16,9 @@
                     "changeOrigin" : true
                 }
             }
+        },
+        "router" : {
+            "base" : "/fireH5/"
         }
     },
     "app-plus" : {

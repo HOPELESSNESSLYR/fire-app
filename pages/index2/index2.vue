@@ -1,27 +1,5 @@
 <template>
   <view>
-<!-- 		<p>
-      <select v-model="selectedConstraints">
-        <option
-          v-for="option in constraintOptions"
-          :key="option.label"
-          :value="option.constraints"
-        >
-          {{ option.label }}
-        </option>
-      </select>
-    </p>
-		<p>
-      <select v-model="trackFunctionSelected">
-        <option
-          v-for="option in trackFunctionOptions"
-          :key="option.text"
-          :value="option"
-        >
-          {{ option.text }}
-        </option>
-      </select>
-    </p> -->
 
     <p class="error">{{ error }}</p>
 
@@ -46,11 +24,6 @@
 
 			
 			<view class="new">
-<!-- 			    <picker mode="selector" :range="categories" @change="onCategoryChange" >
-			      <view class="picker">
-			        点击选择消防设备 : {{ selectedCategory }}
-			      </view>
-			    </picker> -->
 					
 			    <view v-if="selectedCategory">	
 						<view v-for="(item, index) in formItems" :key="index" class="form-item">
@@ -68,12 +41,7 @@
 									
 									<radio :id="item.name" :value="item.name" :checked="item.checked" v-model="item.checked"></radio>
 								</label>
-								<!-- <label>
-									Y <radio :value="true"></radio>
-								</label>
-								<label>
-									N <radio :value="false"></radio>
-								</label> -->
+
 							</radio-group>
 							
 						</view>
@@ -413,33 +381,7 @@ function onError(err) {
 						},
 						success: (res) => {
 							console.log(res.data);
-							// uni.showToast({
-							// 	title: '上传成功',
-							// 	icon: 'none'
-							// });
-							// var form3={}
-							// form3["qrContent"] = result.value
-							// uni.request({
-							// 	// url: 'https://yanru.zicp.fun/fire/firefighting/list',
-							// 	// url: 'http://121.37.141.204:8082/fire/firefighting/getlist',
-							// 	url: 'http://127.0.0.1:8082/fire/firefighting/getlist',	//测试
-							// 	method: 'GET',
-							// 	// data: result.value,
-							// 	data:qrContent,//测试数据
-							// 	header: {
-							// 		'Content-Type': 'application/json'
-							// 	},
-							// 	success: (res) => {
-									// console.log(re.data);
-									// uni.showToast({
-									// 	title: '获取成功',
-									// 	icon: 'none'
-									// });
-									// uni.showToast({
-									// 	title: '上传中，请不要关闭！',
-									// 	icon: 'none'
-									// });
-									// var fireId = res.data[0].fireId 
+							
 									var form4={}
 									form4["fireId"] = fireid.value
 									form4["image"] = image
