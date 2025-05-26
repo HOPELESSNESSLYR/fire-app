@@ -19,6 +19,10 @@
       />
     </view>
 		
+		<p class="resultinfo">
+		  <b>{{ resultinfo }}</b>
+		</p>
+		
 			<view>
 					<ul>
 			      <li v-for="item in inforList" :key="item.recordId" class="liclass">
@@ -40,14 +44,19 @@ import { QrcodeStream, QrcodeDropZone, QrcodeCapture } from 'vue-qrcode-reader'
 
 /*** select device ***/
 const fireid = ref('')
-const result = ref('第5个第5个')			//测试数据
-// const result = ref('')
-let qrcode = ref(false)
+// const result = ref('B-5F-001')			//测试数据
+const result = ref('')
+let qrcode = ref(true)
 const	selectedCategory = ref('');
 
 // new
 const inforList = ref([])
 const inforNo = ref(0)
+const resultinfo = ref('')
+
+// onMounted(()=>{
+// 	cata()
+// })
 // ----------------------
 const MyComponent = {
   components: {
@@ -77,7 +86,7 @@ function onDetect(detectedCodes) {
 		qrcode.value= false
 	}
 	
-	// cata()
+	cata()
 }
 
 /*** select camera ***/
@@ -102,37 +111,6 @@ async function onCameraReady() {
 
   error.value = ''
 }
-
-onMounted(()=>{
-	cata()
-})
-/*** deal device ***/
-
-function cata(){
-	// var resultString = result.value
-	var resultString="第5个第5个"  //测试数据
-	
-	uni.request({
-		//新写接口post列表
-	  // url: 'http://192.168.10.95:8082/fire/firefighting/infor',
-		url: 'http://121.37.141.204:8082/fire/firefighting/infor',
-	  method: 'POST',
-	  data: {
-			qrContent :resultString
-		},
-	  header: { 'content-type': 'application/json'},
-	  success: (res) => {
-	    console.log('请求成功', res);
-			fireid.value = res.data.toString();
-			
-			queryRecord();
-		},
-	  fail: (res) => {
-	    console.log('请求失败', res);
-		},
-	});
-}
-
 
 /*** track functons ***/
 function paintOutline(detectedCodes, ctx) {
@@ -250,7 +228,34 @@ function onError(err) {
 }
 
 /***  device button  ***/
-		
+/*** deal device ***/
+
+function cata(){
+	var resultString = result.value
+	// var resultString="B-5F-001"  //测试数据
+	
+	uni.request({
+		//新写接口post列表
+	  // url: 'http://192.168.10.95:8082/fire/firefighting/infor',
+		url: 'http://121.37.141.204:8082/fire/firefighting/infor',
+	  method: 'POST',
+	  data: {
+			qrContent :resultString
+		},
+	  header: { 'content-type': 'application/json'},
+	  success: (res) => {
+	    // console.log('请求成功', res);
+			fireid.value = res.data.toString();
+			
+			queryRecord();
+		},
+	  fail: (res) => {
+	    console.log('请求失败', res);
+		},
+	});
+}
+
+
 	function queryRecord(){
 		uni.request({
 			// url:'http://192.168.10.95:8082/record/record/infor',
@@ -263,9 +268,11 @@ function onError(err) {
 		    'content-type': 'application/json' 
 		  },
 		  success: (res) => {
-		    console.log('查询成功', res.data);
 				inforList.value = res.data;
-
+				
+				if(res.data.length == 0){
+					resultinfo.value = "此设备无点检记录"
+				}
 				// console.log( inforList.value.length);
 				// console.log(inforList.value)
 		  },
@@ -326,5 +333,12 @@ function goCheck(){
 }
 .liclass{
 	/* margin-left: -3rpx; */
+}
+	
+.resultinfo{
+	margin: 50rpx;
+	font-size: 26px;
+	justify-content: center;
+	display: flex;
 }
 </style> 

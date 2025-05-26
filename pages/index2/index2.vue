@@ -1,6 +1,5 @@
 <template>
   <view>
-
     <p class="error">{{ error }}</p>
 
     <p class="decode-result">
@@ -41,7 +40,7 @@
 									
 									<radio :id="item.name" :value="item.name" :checked="item.checked" v-model="item.checked"></radio>
 								</label>
-
+								
 							</radio-group>
 							
 						</view>
@@ -262,12 +261,7 @@ function paintCenterText(detectedCodes, ctx) {
     ctx.fillText(rawValue, centerX, centerY)
   }
 }
-// const trackFunctionOptions = [
-//   { text: 'centered text', value: paintCenterText },
-//   { text: 'outline', value: paintOutline },
-//   { text: 'nothing', value: undefined  },
-//   { text: 'bounding box', value: paintBoundingBox }
-// ]
+
 const trackFunctionOptions = [
   { text: 'nothing (default)', value: undefined },
   { text: 'outline', value: paintOutline },
@@ -347,10 +341,6 @@ function onError(err) {
 			// 返回选定照片的本地文件路径列表
 			if (res.tempFilePaths && res.tempFilePaths.length > 0) {
 				let imagePaths = res.tempFilePaths[0];
-						// uni.showToast({
-						// 	title: '照片上传:'+ imagePaths,
-						// 	icon: 'none'
-						// });
 			uni.uploadFile({
 				// url: 'https://yanru.zicp.fun/common/upload',
 				url: 'http://121.37.141.204:8082/common/upload',
@@ -400,11 +390,6 @@ function onError(err) {
 										},
 										success: (r) => {
 											console.log(r.data);
-											// uni.showToast({
-											// 	// title: '上传成功2'+form4["image"],
-											// 	title: '上传成功2'+form4["fireId"],			//测试
-											// 	icon: 'none'
-											// });
 															
 											uni.navigateTo({
 												url: '/pages/index/uplaod'
@@ -418,15 +403,7 @@ function onError(err) {
 											});
 										}
 									});
-								// },
-								// fail: (re) => {
-								// 	console.log(re);
-								// 	uni.showToast({
-								// 		title: '获取失败'+ re,
-								// 		icon: 'none'
-								// 	});
-								// }
-							// });
+			
 						},
 						fail: (res) => {
 							console.log(res);
@@ -600,32 +577,6 @@ function onError(err) {
 		// console.log(item.value)        
 	}
 	
-	// function ph(){
-	// 	uni.request({
-	// 		url: 'https://yanru.zicp.fun/record/record/uniphoto',
-	// 		method: 'POST',
-	// 		data:{
-	// 			"fireId": 5,
-	// 			"image": "/profile/upload/2025/04/01/1743486393826_20250401134709A001.jpg"
-	// 		},
-	// 		header: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		success: (r) => {
-	// 			console.log(r.data);
-	// 			uni.showToast({
-	// 				title: '上传成功',
-	// 				icon: 'none'
-	// 			});
-	// 		},
-	// 		fail: (r) => {
-	// 			console.log(r);
-	// 			uni.showToast({
-	// 				title: '上传失败'+ r,
-	// 			});
-	// 		}
-	// 	});
-	// }
 </script>
 
 <style scoped>
